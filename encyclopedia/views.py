@@ -1,17 +1,25 @@
 from django.shortcuts import render
-
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 from . import util
-
+import re
 
 def index(request):
-    print(f'this is the type of request: {type(request)}')
-    print(f'this is the method of request: {dir(request)}')
-    print(f'this is the full request: {request.read()}')
-    print(f'this is the querydict of the request get: {print(request.META)}')
-    return render(request, "encyclopedia/index.html", {
-        "entries": util.list_entries()
-    })
+    try:
+        query = request.GET['q']
+    except KeyError:
+        return render(request, "encyclopedia/index.html", {"entries": util.list_entries()})
+    else:
+        matched = []
+        q = query.lower()
+        for entry in util.list_entries():
+            if q in entry.lower() and q == entry.lower():
+                return entry_page(request, entry)
+            elif q in entry.lower():
+                matched.append(entry)
+        return render(request, "encyclopedia/search_result.html", {"matched": matched, "query": query})
 
 
 def entry_page(request, title):
     return render(request, "encyclopedia/entry_page.html", {"title":title, "content": util.get_entry(title)})
+

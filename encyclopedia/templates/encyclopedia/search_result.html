@@ -1,0 +1,16 @@
+{% extends 'encyclopedia/layout.html' %}
+
+{% block body %}
+
+<h1>Search Result</h1>
+{% if matched %}
+    <ul>
+        {% for match in matched %}
+            <li>{{ match }}</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>There is no search result for: {{ query }}</p>
+{% endif %}
+
+{% endblock %}
