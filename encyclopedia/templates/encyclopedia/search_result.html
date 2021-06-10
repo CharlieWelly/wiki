@@ -1,12 +1,14 @@
 {% extends 'encyclopedia/layout.html' %}
 
+{% block title %}Search Result{% endblock %}
+
 {% block body %}
 
 <h1>Search Result</h1>
 {% if matched %}
     <ul>
         {% for match in matched %}
-            <li>{{ match }}</li>
+            <li><a href="{% url 'encyclopedia:entry_page' match %}">{{ match }}</a></li>
         {% endfor %}
     </ul>
 {% else %}

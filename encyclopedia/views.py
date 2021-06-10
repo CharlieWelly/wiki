@@ -14,7 +14,7 @@ def index(request):
         q = query.lower()
         for entry in util.list_entries():
             if q in entry.lower() and q == entry.lower():
-                return entry_page(request, entry)
+                return HttpResponseRedirect(reverse("encyclopedia:entry_page", args={"title": entry, "content": util.get_entry(entry)}))
             elif q in entry.lower():
                 matched.append(entry)
         return render(request, "encyclopedia/search_result.html", {"matched": matched, "query": query})
