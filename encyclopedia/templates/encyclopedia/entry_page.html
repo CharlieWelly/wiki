@@ -2,4 +2,10 @@
 
 {% block title %}{{ title }}{% endblock %}
 
-{% block body %} {{content}} {% endblock %}
+{% block body %} 
+    {% if content %}
+        {{content}} 
+    {% else %}
+        <p>There is no encyclopedia about {{ title }}</p>
+    {% endif %}
+{% endblock %}
