@@ -5,14 +5,13 @@
 {% block body %}
 
 <h1>Search Result</h1>
-{% if matched %}
 <ul>
     {% for match in matched %}
-    <li><a href="{% url 'entry_page' match %}">{{ match }}</a></li>
+        <li><a href="{% url 'entry_page' match %}">{{ match }}</a></li>
+    {% empty %}
+        <p>There is no search result for: "{{ query }}"</p>
     {% endfor %}
 </ul>
-{% else %}
-<p>There is no search result for: {{ query }}</p>
-{% endif %}
+
 
 {% endblock %}

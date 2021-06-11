@@ -1,7 +1,9 @@
+from enum import auto
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from . import util
+from . import forms
 
 
 def index(request):
@@ -22,7 +24,12 @@ def search(request):
     matched = []
     for entry in util.list_entries():
         if q in entry.lower() and q == entry.lower():
-            return entry_page(request, query)
+            return HttpResponseRedirect(
+                reverse(
+                    "entry_page",
+                    args=(query,),
+                )
+            )
         elif q in entry.lower():
             matched.append(entry)
     return render(
@@ -31,4 +38,14 @@ def search(request):
 
 
 def new_page(request):
-    pass
+    if request.method == "POST":
+        form = forms.NewPage(request.POST)
+        if form.is_valid():
+            title = form.cleaned_data["title"]
+            content = form.cleaned_data["content"]
+            util.save_entry(title, content)
+            return HttpResponseRedirect(reverse("entry_page", args=(title,)))
+        else:
+            return render(request, "encyclopedia/new_page.html", {"form": form})
+    else:
+        return render(request, "encyclopedia/new_page.html", {"form": forms.NewPage()})
