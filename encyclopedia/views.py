@@ -1,11 +1,13 @@
+import random
+import re
 from enum import auto
-from django.shortcuts import render
+
 from django.http import HttpResponseRedirect
+from django.shortcuts import render
 from django.urls import reverse
 from django.views import View
-from . import util
-from . import forms
-import re
+
+from . import forms, util
 
 
 def index(request):
@@ -16,7 +18,7 @@ def entry_page(request, title):
     return render(
         request,
         "encyclopedia/entry_page.html",
-        {"title": title, "content": util.get_entry(title)},
+        {"title": title, "content": util.to_html(util.get_entry(title))},
     )
 
 
@@ -70,3 +72,8 @@ class NewPage(EditPage):
     def get(self, request, *args, **kwargs):
         form = self.form_class()
         return render(request, self.template_name, {"form": form})
+
+
+def random_page(request):
+    title = random.choice(util.list_entries())
+    return HttpResponseRedirect(reverse("entry_page", args=(title,)))

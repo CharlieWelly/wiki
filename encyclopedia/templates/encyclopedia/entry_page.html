@@ -5,7 +5,7 @@
 {% block body %}
 {% if content %}
 <a href="{% url 'edit_page' %}?q={{ title }}">Edit</a>
-{{content}}
+{{content|safe}}
 {% else %}
 <p>There is no encyclopedia about "{{ title }}"</p>
 {% endif %}
