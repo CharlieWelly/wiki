@@ -4,10 +4,17 @@ from django.utils.translation import gettext_lazy as _
 from . import util
 
 
-class NewPage(forms.Form):
+class EditPage(forms.Form):
     title = forms.CharField()
     content = forms.CharField(widget=forms.Textarea)
 
+
+class EditPage(forms.Form):
+    title = forms.CharField()
+    content = forms.CharField(widget=forms.Textarea)
+
+
+class NewPage(EditPage):
     def clean_title(self):
         data = self.cleaned_data["title"]
         if data.lower() in [entry.lower() for entry in util.list_entries()]:
@@ -16,8 +23,3 @@ class NewPage(forms.Form):
                 params={"value": data},
             )
         return data
-
-
-class EditPage(forms.Form):
-    title = forms.CharField()
-    content = forms.CharField(widget=forms.Textarea)

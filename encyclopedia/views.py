@@ -39,55 +39,34 @@ def search(request):
     )
 
 
-def new_page(request):
-    if request.method == "POST":
-        form = forms.NewPage(request.POST)
-        if form.is_valid():
-            title = form.cleaned_data["title"]
-            content = form.cleaned_data["content"]
-            content = "# " + title + "\n\n" + content
-            print(content)
-            util.save_entry(title, content)
-            return HttpResponseRedirect(reverse("entry_page", args=(title,)))
-        else:
-            return render(request, "encyclopedia/new_page.html", {"form": form})
-    else:
-        return render(request, "encyclopedia/new_page.html", {"form": forms.NewPage()})
+class EditPage(View):
+    form_class = forms.EditPage
+    template_name = "encyclopedia/edit_page.html"
 
-
-def edit_page(request):
-    if request.method == "POST":
-        form = forms.EditPage(request.POST)
-        if form.is_valid():
-            title = form.cleaned_data["title"]
-            content = form.cleaned_data["content"]
-            content = "# " + title + "\n\n" + content
-            print(title)
-            print(content)
-            util.save_entry(title, content)
-            return HttpResponseRedirect(reverse("entry_page", args=(title,)))
-    else:
+    def get(self, request, *args, **kwargs):
         title = request.GET.get("q")
         entry = util.get_entry(title)
         split_entry = re.split(r"[\r\n]+", entry, maxsplit=1)
-        data = {"title": title, "content": split_entry[-1]}
-        form = forms.EditPage(data)
-        return render(request, "encyclopedia/edit_page.html", {"form": form})
-
-
-class PreparePage(View):
-    form_class = forms.NewPage
-    template_name = "prepare_page.html"
-
-    def get(self, request, *args, **kwargs):
-        form = self.form_class
-        return render(request, "encyclopedia/prepare_page.html", {"form": form})
+        initial = {"title": title, "content": split_entry[-1]}
+        form = self.form_class(initial=initial)
+        return render(request, self.template_name, {"form": form})
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
-        if form.is_valid:
+        if form.is_valid():
             title = form.cleaned_data["title"]
             content = form.cleaned_data["content"]
             content = "# " + title + "\n\n" + content
             util.save_entry(title, content)
             return HttpResponseRedirect(reverse("entry_page", args=(title,)))
+        else:
+            return render(request, self.template_name, {"form": form})
+
+
+class NewPage(EditPage):
+    form_class = forms.NewPage
+    template_name = "encyclopedia/new_page.html"
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class()
+        return render(request, self.template_name, {"form": form})
