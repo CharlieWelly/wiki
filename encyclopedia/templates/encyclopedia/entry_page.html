@@ -2,10 +2,11 @@
 
 {% block title %}{{ title }}{% endblock %}
 
-{% block body %} 
-    {% if content %}
-        {{content}} 
-    {% else %}
-        <p>There is no encyclopedia about "{{ title }}"</p>
-    {% endif %}
+{% block body %}
+{% if content %}
+<a href="{% url 'edit_page' %}?q={{ title }}">Edit</a>
+{{content}}
+{% else %}
+<p>There is no encyclopedia about "{{ title }}"</p>
+{% endif %}
 {% endblock %}

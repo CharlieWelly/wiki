@@ -2,8 +2,10 @@ from enum import auto
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.views import View
 from . import util
 from . import forms
+import re
 
 
 def index(request):
@@ -43,9 +45,49 @@ def new_page(request):
         if form.is_valid():
             title = form.cleaned_data["title"]
             content = form.cleaned_data["content"]
+            content = "# " + title + "\n\n" + content
+            print(content)
             util.save_entry(title, content)
             return HttpResponseRedirect(reverse("entry_page", args=(title,)))
         else:
             return render(request, "encyclopedia/new_page.html", {"form": form})
     else:
         return render(request, "encyclopedia/new_page.html", {"form": forms.NewPage()})
+
+
+def edit_page(request):
+    if request.method == "POST":
+        form = forms.EditPage(request.POST)
+        if form.is_valid():
+            title = form.cleaned_data["title"]
+            content = form.cleaned_data["content"]
+            content = "# " + title + "\n\n" + content
+            print(title)
+            print(content)
+            util.save_entry(title, content)
+            return HttpResponseRedirect(reverse("entry_page", args=(title,)))
+    else:
+        title = request.GET.get("q")
+        entry = util.get_entry(title)
+        split_entry = re.split(r"[\r\n]+", entry, maxsplit=1)
+        data = {"title": title, "content": split_entry[-1]}
+        form = forms.EditPage(data)
+        return render(request, "encyclopedia/edit_page.html", {"form": form})
+
+
+class PreparePage(View):
+    form_class = forms.NewPage
+    template_name = "prepare_page.html"
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class
+        return render(request, "encyclopedia/prepare_page.html", {"form": form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid:
+            title = form.cleaned_data["title"]
+            content = form.cleaned_data["content"]
+            content = "# " + title + "\n\n" + content
+            util.save_entry(title, content)
+            return HttpResponseRedirect(reverse("entry_page", args=(title,)))
