@@ -1,17 +1,13 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
+
 from . import util
 
 
 class EditPage(forms.Form):
-    title = forms.CharField()
-    content = forms.CharField(widget=forms.Textarea)
-
-
-class EditPage(forms.Form):
-    title = forms.CharField()
-    content = forms.CharField(widget=forms.Textarea)
+    title = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
+    content = forms.CharField(widget=forms.Textarea(attrs={"class": "form-control"}))
 
 
 class NewPage(EditPage):

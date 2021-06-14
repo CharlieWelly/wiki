@@ -24,17 +24,11 @@ def entry_page(request, title):
 
 def search(request):
     query = request.GET["q"]
-    q = query.lower()
     matched = []
     for entry in util.list_entries():
-        if q in entry.lower() and q == entry.lower():
-            return HttpResponseRedirect(
-                reverse(
-                    "entry_page",
-                    args=(query,),
-                )
-            )
-        elif q in entry.lower():
+        if query.lower() == entry.lower():
+            return HttpResponseRedirect(reverse("entry_page", args=(query,)))
+        elif query.lower() in entry.lower():
             matched.append(entry)
     return render(
         request, "encyclopedia/search_result.html", {"matched": matched, "query": query}
