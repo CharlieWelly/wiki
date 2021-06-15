@@ -1,13 +1,8 @@
-{% extends 'encyclopedia/layout.html' %}
+{% extends 'encyclopedia/prepare_page_layout.html' %}
 
-{% block title %}New Page{% endblock %}
+{% block title %}Edit Page{% endblock title %}
 
-{% block body %}
+{% block form %}
 <form action="{% url 'new_page' %}" method="POST">
-    <div class="form-group">
-        {% csrf_token %}
-        {{ form }}
-        <input class="btn btn-primary" type="submit" value="Save">
-    </div>
-</form>
-{% endblock %}
+
+    {% endblock form %}
