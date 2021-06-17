@@ -1,13 +1,14 @@
 {% extends 'encyclopedia/layout.html' %}
+{% load filters %}
 
-{% block title %}New Page{% endblock %}
+{% block title %}Edit Page{% endblock %}
 
 {% block body %}
 <form action="{% url 'edit_page' %}" method="POST">
     <div class="form-group">
         {% csrf_token %}
-        {{ form }}
+        {{ form|add_class:"form-control"|render_as_p }}
         <input class="btn btn-primary" type="submit" value="Save">
     </div>
 </form>
-{% endblock %}
+{% endblock body %}

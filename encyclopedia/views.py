@@ -44,7 +44,7 @@ class EditPage(View):
         entry = util.get_entry(title)
         split_entry = re.split(r"[\r\n]+", entry, maxsplit=1)
         initial = {"title": title, "content": split_entry[-1]}
-        form = self.form_class(initial=initial)
+        form = self.form_class(initial=initial, auto_id=False)
         return render(request, self.template_name, {"form": form})
 
     def post(self, request, *args, **kwargs):
@@ -64,7 +64,7 @@ class NewPage(EditPage):
     template_name = "encyclopedia/new_page.html"
 
     def get(self, request, *args, **kwargs):
-        form = self.form_class()
+        form = self.form_class(auto_id=False)
         return render(request, self.template_name, {"form": form})
 
 

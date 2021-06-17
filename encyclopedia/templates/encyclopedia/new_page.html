@@ -1,8 +1,14 @@
-{% extends 'encyclopedia/prepare_page_layout.html' %}
+{% extends 'encyclopedia/layout.html' %}
+{% load filters %}
 
-{% block title %}Edit Page{% endblock title %}
+{% block title %}New Page{% endblock title %}
 
-{% block form %}
+{% block body %}
 <form action="{% url 'new_page' %}" method="POST">
-
-    {% endblock form %}
+    <div class="form-group">
+        {% csrf_token %}
+        {{ form|add_class:"form-control"|add_attr:"placeholder,type something here" }}
+        <input class="btn btn-primary" type="submit" value="Save">
+    </div>
+</form>
+{% endblock body %}
