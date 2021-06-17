@@ -7,7 +7,7 @@
 <form action="{% url 'edit_page' %}" method="POST">
     <div class="form-group">
         {% csrf_token %}
-        {{ form|add_class:"form-control"|render_as_p }}
+        {{ form|add_class:"form-control"}}
         <input class="btn btn-primary" type="submit" value="Save">
     </div>
 </form>

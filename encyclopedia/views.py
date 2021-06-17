@@ -35,16 +35,12 @@ def search(request):
     )
 
 
-class EditPage(View):
-    form_class = forms.EditPage
-    template_name = "encyclopedia/edit_page.html"
+class NewPage(View):
+    form_class = forms.NewPage
+    template_name = "encyclopedia/new_page.html"
 
     def get(self, request, *args, **kwargs):
-        title = request.GET.get("q")
-        entry = util.get_entry(title)
-        split_entry = re.split(r"[\r\n]+", entry, maxsplit=1)
-        initial = {"title": title, "content": split_entry[-1]}
-        form = self.form_class(initial=initial, auto_id=False)
+        form = self.form_class()
         return render(request, self.template_name, {"form": form})
 
     def post(self, request, *args, **kwargs):
@@ -59,12 +55,16 @@ class EditPage(View):
             return render(request, self.template_name, {"form": form})
 
 
-class NewPage(EditPage):
-    form_class = forms.NewPage
-    template_name = "encyclopedia/new_page.html"
+class EditPage(NewPage):
+    form_class = forms.EditPage
+    template_name = "encyclopedia/edit_page.html"
 
     def get(self, request, *args, **kwargs):
-        form = self.form_class(auto_id=False)
+        title = request.GET.get("q")
+        entry = util.get_entry(title)
+        split_entry = re.split(r"[\r\n]+", entry, maxsplit=1)
+        initial = {"title": title, "content": split_entry[-1]}
+        form = self.form_class(initial=initial, auto_id=False)
         return render(request, self.template_name, {"form": form})
 
 
